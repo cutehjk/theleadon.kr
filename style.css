@@ -9,8 +9,8 @@
   --teal:#1F6F78; --violet:#4A3A8C;
   --shadow:0 1px 2px rgba(19,37,74,.05),0 8px 24px rgba(19,37,74,.07);
   --r-lg:24px; --r-md:16px; --r-sm:10px;
-  --f-body:"Noto Sans KR",Pretendard","Malgun Gothic",system-ui,sans-serif;
-  --f-display:"Noto Serif KR","Pretendard",serif;
+  --f-body:"Pretendard Variable",Pretendard,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-display:"Pretendard Variable",Pretendard,"Apple SD Gothic Neo",sans-serif;
   --f-latin:"Cormorant Garamond","Noto Serif KR",Georgia,serif;
   --f-label:"Montserrat","Noto Sans KR",system-ui,sans-serif;
   color-scheme:light;
