@@ -275,3 +275,12 @@ td.name{font-weight:700;color:var(--accent-text);white-space:nowrap}
 @media (max-width:860px){.split{grid-template-columns:minmax(0,1fr);gap:32px}}
 
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+/* photos */
+.photo-band{margin:0 0 56px;border-radius:var(--r-lg);overflow:hidden;aspect-ratio:21/8;background:var(--surface-2);box-shadow:var(--shadow)}
+.photo-band img{display:block;width:100%;height:100%;object-fit:cover}
+.section.flush-top{padding-top:0}
+.section.flush-top .photo-band{margin-bottom:0}
+.pillar{overflow:hidden}
+.pillar-photo{margin:-32px -32px 0;aspect-ratio:16/9;overflow:hidden;background:var(--surface-2)}
+.pillar-photo img{display:block;width:100%;height:100%;object-fit:cover}
+@media (max-width:640px){.photo-band{aspect-ratio:4/3;margin-bottom:40px}}
