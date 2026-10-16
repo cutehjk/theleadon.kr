@@ -1,5 +1,5 @@
 /* 소식 게시판: news/posts.json 의 글을 읽어 메뉴·홈·목록·상세 화면을 그립니다.
-   글이 하나도 없으면 메뉴의 '소식'과 홈의 소식 섹션을 숨기고 기존 화면을 그대로 둡니다. */
+   글이 하나도 없으면 홈의 소식 섹션과 푸터 링크를 숨기고 기존 화면을 그대로 둡니다. 관리자 글쓰기 화면은 admin.html/admin.js. */
 (function () {
   var CATEGORIES = {
     notice: { label: '공지', en: 'NOTICE' },
@@ -104,6 +104,10 @@
       for (var n = 1; n <= pages; n++) html += '<a href="' + link(cat, n) + '" aria-label="' + n + '페이지"' + (n === page ? ' aria-current="page"' : '') + '>' + n + '</a>';
       html += (page < pages ? '<a href="' + link(cat, page + 1) + '" aria-label="다음 페이지">›</a>' : '<span aria-hidden="true">›</span>') + '</nav>';
     }
+    if (isAdmin()) {
+      html = '<div class="admin-bar"><a class="btn btn-navy" href="admin.html?new=' + (cat || 'notice') + '">+ 글쓰기</a>' +
+        '<a class="btn btn-line" href="admin.html">글 관리</a></div>' + html;
+    }
     root.innerHTML = html;
     if (cat) document.title = CATEGORIES[cat].label + ' - 소식 · 더리드온';
   }
@@ -120,33 +124,16 @@
         '<div class="article-actions"><a class="btn btn-navy" href="news.html">목록으로</a></div>';
       return;
     }
-    var p = posts[i], prev = posts[i + 1], next = posts[i - 1], c = catOf(p);
+    var p = posts[i], c = catOf(p);
     var crumb = document.querySelector('[data-news-crumb]');
     if (crumb) crumb.innerHTML = ' / <a href="news.html?category=' + esc(p.category) + '">' + esc(c.label) + '</a>';
     document.title = p.title + ' · 더리드온';
 
-    var body = String(p.body || '').split(/\n\s*\n/).map(function (para) {
-      return para.trim() ? '<p>' + esc(para.trim()).replace(/\n/g, '<br>') + '</p>' : '';
-    }).join('');
-    var imgs = (p.images || []).map(function (im) {
-      return '<figure class="article-figure"><img src="' + esc(im.src) + '" alt="' + esc(im.alt || '') + '" loading="lazy">' +
-        (im.alt ? '<figcaption>' + esc(im.alt) + '</figcaption>' : '') + '</figure>';
-    }).join('');
-    var files = (p.attachments || []).length ? '<div class="files"><h2>첨부파일</h2><ul>' + p.attachments.map(function (f) {
-      return '<li><a href="' + esc(safeHref(f.href)) + '" download>📄 ' + esc(f.name) + (f.size ? ' <small>(' + esc(f.size) + ')</small>' : '') + '</a></li>';
-    }).join('') + '</ul></div>' : '';
-    var pn = function (q, label) {
-      return q ? '<a href="' + url(q) + '"><span class="label">' + label + '</span><b>' + esc(q.title) + '</b><span class="news-date">' + fmt(q.date) + '</span></a>' : '';
-    };
-
-    root.innerHTML = '<article class="article">' +
-      '<div class="article-meta"><span class="news-cat">' + esc(c.label) + '</span><time class="news-date" datetime="' + esc(p.date) + '">' + fmt(p.date) + '</time></div>' +
-      '<h1>' + esc(p.title) + '</h1>' +
-      (p.cover ? '<figure class="article-cover"><img src="' + esc(p.cover) + '" alt="' + esc(p.coverAlt || '') + '">' + (p.coverAlt ? '<figcaption>' + esc(p.coverAlt) + '</figcaption>' : '') + '</figure>' : '') +
-      '<div class="prose">' + body + imgs + '</div>' + files +
-      (prev || next ? '<nav class="prevnext" aria-label="이전·다음 글">' + pn(prev, '이전 글') + pn(next, '다음 글') + '</nav>' : '') +
-      '<div class="article-actions"><a class="btn btn-navy" href="news.html">목록</a><button class="btn btn-line" type="button" data-copy-link>🔗 링크 복사</button></div>' +
-      '</article>';
+    root.innerHTML = article(p, posts[i + 1], posts[i - 1]);
+    if (isAdmin()) {
+      root.querySelector('.article-actions').insertAdjacentHTML('beforeend',
+        '<a class="btn btn-line" href="admin.html?edit=' + encodeURIComponent(p.id) + '">수정</a>');
+    }
 
     var btn = root.querySelector('[data-copy-link]');
     btn.addEventListener('click', function () {
@@ -156,6 +143,40 @@
       else done('복사에 실패했습니다');
     });
   }
+
+  /* 글 상세 화면 HTML (관리자 미리보기에서도 사용) */
+  function article(p, prev, next) {
+    var c = catOf(p);
+    var body = String(p.body || '').split(/\n\s*\n/).map(function (para) {
+      return para.trim() ? '<p>' + esc(para.trim()).replace(/\n/g, '<br>') + '</p>' : '';
+    }).join('');
+    var imgs = (p.images || []).map(function (im) {
+      return '<figure class="article-figure"><img src="' + esc(im.src) + '" alt="' + esc(im.alt || '') + '" loading="lazy">' +
+        (im.alt ? '<figcaption>' + esc(im.alt) + '</figcaption>' : '') + '</figure>';
+    }).join('');
+    var files = (p.attachments || []).length ? '<div class="files"><h2>첨부파일</h2><ul>' + p.attachments.map(function (f) {
+      return '<li><a href="' + esc(safeHref(f.href)) + '" download="' + esc(f.name) + '">📄 ' + esc(f.name) + (f.size ? ' <small>(' + esc(f.size) + ')</small>' : '') + '</a></li>';
+    }).join('') + '</ul></div>' : '';
+    var pn = function (q, label) {
+      return q ? '<a href="' + url(q) + '"><span class="label">' + label + '</span><b>' + esc(q.title) + '</b><span class="news-date">' + fmt(q.date) + '</span></a>' : '';
+    };
+
+    return '<article class="article">' +
+      '<div class="article-meta"><span class="news-cat">' + esc(c.label) + '</span><time class="news-date" datetime="' + esc(p.date) + '">' + fmt(p.date) + '</time></div>' +
+      '<h1>' + esc(p.title) + '</h1>' +
+      (p.cover ? '<figure class="article-cover"><img src="' + esc(p.cover) + '" alt="' + esc(p.coverAlt || '') + '">' + (p.coverAlt ? '<figcaption>' + esc(p.coverAlt) + '</figcaption>' : '') + '</figure>' : '') +
+      '<div class="prose">' + body + imgs + '</div>' + files +
+      (prev || next ? '<nav class="prevnext" aria-label="이전·다음 글">' + pn(prev, '이전 글') + pn(next, '다음 글') + '</nav>' : '') +
+      '<div class="article-actions"><a class="btn btn-navy" href="news.html">목록</a><button class="btn btn-line" type="button" data-copy-link>🔗 링크 복사</button></div>' +
+      '</article>';
+  }
+
+  // 관리자 페이지에서 연결한 적이 있는 브라우저에만 글쓰기·수정 버튼 표시
+  function isAdmin() {
+    try { return !!(localStorage.getItem('tlo-admin-token') || sessionStorage.getItem('tlo-admin-token')); } catch (e) { return false; }
+  }
+
+  window.LeadOnNews = { CATEGORIES: CATEGORIES, card: card, article: article, esc: esc };
 
   load().then(function (posts) {
     showNav(posts.length > 0);

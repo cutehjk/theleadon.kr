@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>소식 관리 · 더리드온</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="mark.png" type="image/png">
+<link rel="apple-touch-icon" href="mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Montserrat:wght@500;600;700;800&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header"><div class="wrap">
+<a class="brand" href="index.html" aria-label="더리드온 홈"><span class="mark"><img src="mark.png" alt="" width="30" height="23"></span><span><span class="word">THELEAD<b>ON</b></span><small>LEAD TODAY, GROW TOMORROW</small></span></a>
+<nav class="nav" aria-label="주요 메뉴"><a href="about.html">회사소개</a><a href="business.html">사업영역</a><a href="vision.html">AI 교육혁신</a><a href="organization.html">조직·인력</a><a href="news.html">소식</a><a href="contact.html">문의</a></nav></div></header>
+<main>
+<section class="page-head"><div class="wrap"><span class="eyebrow">Admin</span><h1>소식 관리</h1><p>공지 · 보도자료 · 사업소식 글을 쓰고 고칩니다.</p>
+<div class="crumbs"><a href="index.html">홈</a> / <a href="news.html">소식</a> / 관리</div></div></section>
+<section class="section"><div class="wrap adm">
+<p class="adm-msg" id="msg" role="status" aria-live="polite" hidden></p>
+
+<!-- 1) 연결 -->
+<div class="adm-panel" id="login" hidden>
+<h2>관리자 연결</h2>
+<p>GitHub '접근 키(토큰)'를 붙여 넣으면 글을 쓸 수 있습니다. 처음 한 번만 하면 됩니다.</p>
+<form id="login-form">
+<div class="fld"><label for="token">접근 키</label><input type="password" id="token" autocomplete="off" placeholder="github_pat_로 시작하는 키" required></div>
+<div class="checks fld"><label><input type="checkbox" id="remember" checked> 이 컴퓨터에 기억하기 (공용 PC에서는 해제)</label></div>
+<button class="btn btn-navy" type="submit">연결</button>
+</form>
+<details><summary>접근 키 만드는 방법</summary>
+<ol>
+<li>GitHub(cutehjk 계정)에 로그인한 상태에서 <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">새 접근 키 만들기 화면</a>을 엽니다.</li>
+<li><b>Token name</b>: <code>홈페이지 소식 관리</code>처럼 알아보기 쉬운 이름을 적습니다.</li>
+<li><b>Expiration</b>(만료일): 원하는 기간을 고릅니다. 만료되면 같은 방법으로 새로 만들면 됩니다.</li>
+<li><b>Repository access</b>: <b>Only select repositories</b>를 고르고 <code>cutehjk/theleadon.kr</code>를 선택합니다.</li>
+<li><b>Permissions</b> → <b>Repository permissions</b> → <b>Contents</b>를 <b>Read and write</b>로 바꿉니다.</li>
+<li>맨 아래 <b>Generate token</b>을 누르고, 나온 키를 복사해 위 칸에 붙여 넣습니다. (키는 다시 볼 수 없으니 이 화면에서 바로 붙여 넣으세요)</li>
+</ol>
+</details>
+</div>
+
+<!-- 2) 글 목록 -->
+<div class="adm-panel" id="board" hidden>
+<div class="adm-top"><nav class="news-tabs" id="tabs" aria-label="분류"></nav>
+<button class="btn btn-navy" type="button" id="btn-new">+ 글쓰기</button></div>
+<ul class="adm-list" id="list"></ul>
+<p class="news-empty" id="list-empty" hidden>이 게시판에 글이 없습니다. [글쓰기]를 눌러 첫 글을 올려 보세요.</p>
+<div class="adm-actions"><a class="btn btn-line" href="news.html">소식 페이지 보기</a><button class="btn btn-line" type="button" id="btn-logout">연결 해제</button></div>
+</div>
+
+<!-- 3) 글쓰기 -->
+<form class="adm-panel" id="editor" hidden novalidate>
+<h2 id="ed-title">새 글 쓰기</h2>
+<p>빈 줄로 문단을 나눕니다. 저장하면 1~2분 뒤 홈페이지에 나타납니다.</p>
+<div class="fld"><span class="lb">게시판</span><div class="radios" id="ed-cat"></div></div>
+<div class="fld"><label for="ed-subject">제목</label><input type="text" id="ed-subject" maxlength="120" required></div>
+<div class="row2">
+<div class="fld"><label for="ed-date">날짜</label><input type="date" id="ed-date" required></div>
+<div class="fld"><span class="lb">옵션</span><div class="checks"><label><input type="checkbox" id="ed-pinned"> 목록 맨 위에 고정</label><label><input type="checkbox" id="ed-draft"> 임시저장 (홈페이지에 안 보임)</label></div></div>
+</div>
+<div class="fld"><span class="lb">대표 사진 <small>(가로 사진 권장 · 없으면 기본 이미지)</small></span>
+<ul class="files-ed" id="ed-cover"></ul>
+<label class="pick" id="pick-cover">📷 사진 선택<input type="file" accept="image/*" id="in-cover"></label></div>
+<div class="fld"><label for="ed-body">본문</label><textarea id="ed-body"></textarea></div>
+<div class="fld"><span class="lb">본문 아래 사진 <small>(여러 장 선택 가능 · 설명은 사진 아래 표시)</small></span>
+<ul class="files-ed" id="ed-images"></ul>
+<label class="pick">🖼 사진 추가<input type="file" accept="image/*" multiple id="in-images"></label></div>
+<div class="fld"><span class="lb">첨부파일 <small>(파일당 20MB 이하)</small></span>
+<ul class="files-ed" id="ed-files"></ul>
+<label class="pick">📎 파일 추가<input type="file" multiple id="in-files"></label></div>
+<div class="adm-actions">
+<button class="btn btn-line" type="button" id="btn-cancel">취소</button>
+<button class="btn btn-line" type="button" id="btn-preview">미리보기</button>
+<button class="btn btn-navy" type="submit" id="btn-save">등록</button>
+</div>
+<div class="adm-preview" id="preview" hidden></div>
+</form>
+</div></section>
+</main>
+<footer class="site-footer"><div class="wrap">
+<div><a class="brand" href="index.html"><span class="mark"><img src="mark.png" alt="" width="30" height="23"></span><span><span class="word">THELEAD<b>ON</b></span><small>LEAD TODAY, GROW TOMORROW</small></span></a>
+<p style="margin-top:18px;max-width:36ch">교육과 기술을 연결하여 사람과 조직의 성장을 지원하는 AI·에듀테크 전문기업</p></div>
+<div><h5>회사</h5><ul><li><a href="about.html">회사소개</a></li><li><a href="business.html">사업영역</a></li><li><a href="vision.html">AI 교육혁신 비전</a></li><li><a href="organization.html">조직·인력</a></li></ul></div>
+<div><h5>문의</h5><ul><li data-news-link hidden><a href="news.html">소식</a></li><li><a href="contact.html">문의 안내</a></li></ul></div>
+<div class="legal"><span>주식회사 더리드온 (The LeadOn)</span><span>© 2026 The LeadOn. All rights reserved.</span></div>
+</div></footer>
+<script src="news.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
