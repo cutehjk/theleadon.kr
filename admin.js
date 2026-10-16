@@ -197,6 +197,7 @@
     $('ed-pinned').checked = !!(p && p.pinned);
     $('ed-draft').checked = !!(p && p.draft);
     $('ed-body').value = p ? p.body || '' : '';
+    $('ed-link').value = p ? p.link || '' : '';
     $('preview').hidden = true;
     renderFiles();
     dirty = false;
@@ -246,12 +247,14 @@
       date: $('ed-date').value,
       pinned: $('ed-pinned').checked,
       draft: $('ed-draft').checked,
-      body: $('ed-body').value.replace(/\r\n/g, '\n').trim()
+      body: $('ed-body').value.replace(/\r\n/g, '\n').trim(),
+      link: $('ed-link').value.trim()
     };
   }
   function validate(p) {
     if (!p.title) return ['ed-subject', '제목을 입력해 주세요.'];
     if (!/^\d{4}-\d{2}-\d{2}$/.test(p.date)) return ['ed-date', '날짜를 입력해 주세요.'];
+    if (p.link && !/^https?:\/\//i.test(p.link)) return ['ed-link', '원문 링크는 http:// 또는 https://로 시작해야 합니다.'];
     if (ed.cover && !ed.cover.alt.trim()) return [null, '대표 사진의 설명을 적어 주세요. (시각장애인 안내와 검색에 쓰입니다)'];
     if (p.pinned && posts.filter(function (q) { return q.pinned && q.id !== p.id; }).length >= MAX_PINNED) {
       return ['ed-pinned', '고정 글은 최대 ' + MAX_PINNED + '개입니다. 다른 글의 고정을 먼저 풀어 주세요.'];
@@ -261,7 +264,7 @@
 
   function preview() {
     var p = formPost();
-    var view = { id: p.id || 'preview', title: p.title || '(제목 없음)', category: p.category, date: p.date || today(), body: p.body };
+    var view = { id: p.id || 'preview', title: p.title || '(제목 없음)', category: p.category, date: p.date || today(), body: p.body, link: p.link };
     if (ed.cover) { view.cover = src(ed.cover); view.coverAlt = ed.cover.alt; }
     view.images = ed.images.map(function (im) { return { src: src(im), alt: im.alt }; });
     view.attachments = ed.files.map(function (f) { return { name: f.name, href: '#', size: f.size }; });
@@ -295,6 +298,7 @@
     if (!p.pinned) delete p.pinned;
     if (!p.draft) delete p.draft;
     if (!p.body) delete p.body;
+    if (!p.link) delete p.link;
 
     var btn = $('btn-save'), label = btn.textContent;
     btn.disabled = true; btn.textContent = '저장 중…';

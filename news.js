@@ -165,7 +165,8 @@
       '<div class="article-meta"><span class="news-cat">' + esc(c.label) + '</span><time class="news-date" datetime="' + esc(p.date) + '">' + fmt(p.date) + '</time></div>' +
       '<h1>' + esc(p.title) + '</h1>' +
       (p.cover ? '<figure class="article-cover"><img src="' + esc(p.cover) + '" alt="' + esc(p.coverAlt || '') + '">' + (p.coverAlt ? '<figcaption>' + esc(p.coverAlt) + '</figcaption>' : '') + '</figure>' : '') +
-      '<div class="prose">' + body + imgs + '</div>' + files +
+      '<div class="prose">' + body + imgs + '</div>' +
+      (/^https?:\/\//i.test(p.link || '') ? '<p class="article-source"><a class="btn btn-line" href="' + esc(p.link) + '" target="_blank" rel="noopener">원문 기사 보기 ↗</a></p>' : '') + files +
       (prev || next ? '<nav class="prevnext" aria-label="이전·다음 글">' + pn(prev, '이전 글') + pn(next, '다음 글') + '</nav>' : '') +
       '<div class="article-actions"><a class="btn btn-navy" href="news.html">목록</a><button class="btn btn-line" type="button" data-copy-link>🔗 링크 복사</button></div>' +
       '</article>';

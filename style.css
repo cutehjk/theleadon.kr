@@ -429,3 +429,4 @@ td.name{font-weight:700;color:var(--accent-text);white-space:nowrap}
 .adm details summary{cursor:pointer;font-weight:600}
 .adm details ol{margin:12px 0 0;padding-left:1.3em;line-height:1.8}
 #board .adm-actions{border-top:0}
+.article-source{margin:8px 0 28px}
