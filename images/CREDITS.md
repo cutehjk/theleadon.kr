@@ -7,4 +7,3 @@ Photos are from Unsplash (https://unsplash.com/license) and Pexels (https://www.
 | edu-operation.jpg | https://www.pexels.com/photo/4940642/ (Asia Culture Center, Pexels License) |
 | content-studio.jpg | https://unsplash.com/photos/hRZhwtLEDfQ |
 | digital-sns.jpg | https://unsplash.com/photos/4lKFi3KqnD8 (Swello) |
-| consulting.jpg | https://www.pexels.com/photo/7964413/ (Felicity Tai, Pexels License) |
