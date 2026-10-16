@@ -394,6 +394,7 @@
 
   /* ---------- 시작 ---------- */
   var q = new URLSearchParams(location.search);
+  msg('');
   var t = stored();
   if (!t) { show('login'); return; }
   connect(t).then(function (ok) {
