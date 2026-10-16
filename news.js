@@ -31,6 +31,11 @@
   function safeHref(h) { h = String(h || ''); return /^\s*[a-z][a-z0-9+.-]*:/i.test(h) && !/^https?:\/\//i.test(h) ? '#' : h; }
   function excerpt(p, n) {
     var t = String(p.body || '').split(/\n\s*\n/)[0].replace(/\s+/g, ' ').trim();
+    // 머리말이 없는 뉴스레터는 첫 기사 제목들로 요약
+    if (!t && p.sections) {
+      t = [].concat.apply([], p.sections.map(function (s) { return (s.items || []).map(function (it) { return it.title; }); }))
+        .filter(Boolean).slice(0, 3).join(' · ');
+    }
     return t.length > n ? t.slice(0, n) + '…' : t;
   }
 
@@ -216,11 +221,28 @@
   }
 
   /* 글 상세 화면 HTML (관리자 미리보기에서도 사용) */
-  function article(p, prev, next) {
-    var c = catOf(p);
-    var body = String(p.body || '').split(/\n\s*\n/).map(function (para) {
+  function paras(text) {
+    return String(text || '').split(/\n\s*\n/).map(function (para) {
       return para.trim() ? '<p>' + esc(para.trim()).replace(/\n/g, '<br>') + '</p>' : '';
     }).join('');
+  }
+  // 뉴스레터 기사 목록: 묶음 제목(+사진) 아래 번호 붙은 기사 제목(링크)과 출처
+  function sections(p) {
+    return (p.sections || []).map(function (s) {
+      var items = (s.items || []).filter(function (it) { return it && it.title; });
+      return '<section class="nl-sec">' + (s.title ? '<h2>' + esc(s.title) + '</h2>' : '') +
+        (s.image ? '<img class="nl-sec-img" src="' + esc(s.image) + '" alt="' + esc(s.imageAlt || '') + '" loading="lazy">' : '') +
+        (items.length ? '<ol class="nl-items">' + items.map(function (it) {
+          var t = esc(it.title);
+          return '<li>' + (/^https?:\/\//i.test(it.url || '') ? '<a href="' + esc(it.url) + '" target="_blank" rel="noopener">' + t + '</a>' : '<b>' + t + '</b>') +
+            (it.source ? '<span class="nl-src">' + esc(it.source) + '</span>' : '') + '</li>';
+        }).join('') + '</ol>' : '') + '</section>';
+    }).join('');
+  }
+
+  function article(p, prev, next) {
+    var c = catOf(p);
+    var body = paras(p.body);
     var imgs = (p.images || []).map(function (im) {
       return '<figure class="article-figure"><img src="' + esc(im.src) + '" alt="' + esc(im.alt || '') + '" loading="lazy">' +
         (im.alt ? '<figcaption>' + esc(im.alt) + '</figcaption>' : '') + '</figure>';
@@ -236,7 +258,8 @@
       '<div class="article-meta"><span class="news-cat">' + esc(c.label) + (vol(p) ? ' ' + vol(p) : '') + '</span><time class="news-date" datetime="' + esc(p.date) + '">' + fmt(p.date) + '</time></div>' +
       '<h1>' + esc(p.title) + '</h1>' +
       (p.cover ? '<figure class="article-cover"><img src="' + esc(p.cover) + '" alt="' + esc(p.coverAlt || '') + '">' + (p.coverAlt ? '<figcaption>' + esc(p.coverAlt) + '</figcaption>' : '') + '</figure>' : '') +
-      '<div class="prose">' + body + imgs + '</div>' +
+      (body ? '<div class="prose">' + body + '</div>' : '') + sections(p) +
+      (imgs || p.outro ? '<div class="prose">' + imgs + paras(p.outro) + '</div>' : '') +
       (/^https?:\/\//i.test(p.link || '') ? '<p class="article-source"><a class="btn btn-line" href="' + esc(p.link) + '" target="_blank" rel="noopener">원문 기사 보기 ↗</a></p>' : '') + files +
       (prev || next ? '<nav class="prevnext" aria-label="이전·다음 글">' + pn(prev, '이전 글') + pn(next, '다음 글') + '</nav>' : '') +
       '<div class="article-actions"><a class="btn btn-navy" href="' + listPage(p) + '">목록</a><button class="btn btn-line" type="button" data-copy-link>🔗 링크 복사</button></div>' +

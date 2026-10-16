@@ -46,6 +46,8 @@
 | `title` | ✅ | 제목 |
 | `category` | ✅ | `notice`(공지) / `press`(보도자료) / `news`(사업소식) / `newsletter`(뉴스레터) |
 | `vol` | 뉴스레터면 ✅ | 뉴스레터 호수 (숫자) |
+| `sections` | | 뉴스레터 기사 목록. `[{ "title": "📮 국내 뉴스", "image": "...", "imageAlt": "...", "items": [{ "title": "기사 제목", "url": "https://...", "source": "출처 · 날짜" }] }]` |
+| `outro` | | 뉴스레터 맺음말 (기사 목록 아래) |
 | `date` | ✅ | `YYYY-MM-DD`. 최신순으로 정렬되고, 7일 이내면 NEW 표시 |
 | `pinned` | | `true`면 목록 맨 위 고정 띠에 표시 (최대 3건) |
 | `cover` | | 대표 사진. 16:9로 잘려 보이므로 가로 사진, 가로 1200px 이상 권장. 없으면 기본 이미지 |
