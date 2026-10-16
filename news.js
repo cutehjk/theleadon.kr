@@ -13,6 +13,9 @@
   var LETTERS_PER_PAGE = 20;
   var MAX_PINNED = 3;
   var NEW_DAYS = 7;
+  // 기사 목록이 있는 뉴스레터 맨 아래에 자동으로 붙는 안내 문구
+  var LETTER_NOTE = '※ 이 뉴스레터는 AI가 이번 주 공개된 기사 중 정보통신·국방·보안 분야 대학원생에게 도움이 될 기사를 골라 수집하고, ' +
+    '더리드온이 검토해 정리했습니다. 기사 내용과 저작권은 각 언론사에 있으며, 제목을 누르면 원문으로 이동합니다.';
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -259,6 +262,7 @@
       '<h1>' + esc(p.title) + '</h1>' +
       (p.cover ? '<figure class="article-cover"><img src="' + esc(p.cover) + '" alt="' + esc(p.coverAlt || '') + '">' + (p.coverAlt ? '<figcaption>' + esc(p.coverAlt) + '</figcaption>' : '') + '</figure>' : '') +
       (body ? '<div class="prose">' + body + '</div>' : '') + sections(p) +
+      (isLetter(p) && (p.sections || []).length ? '<p class="nl-note">' + LETTER_NOTE + '</p>' : '') +
       (imgs || p.outro ? '<div class="prose">' + imgs + paras(p.outro) + '</div>' : '') +
       (/^https?:\/\//i.test(p.link || '') ? '<p class="article-source"><a class="btn btn-line" href="' + esc(p.link) + '" target="_blank" rel="noopener">원문 기사 보기 ↗</a></p>' : '') + files +
       (prev || next ? '<nav class="prevnext" aria-label="이전·다음 글">' + pn(prev, '이전 글') + pn(next, '다음 글') + '</nav>' : '') +

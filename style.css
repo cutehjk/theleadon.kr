@@ -487,3 +487,4 @@ td.name{font-weight:700;color:var(--accent-text);white-space:nowrap}
 .sec-ed-items li::marker{color:var(--brass);font-weight:700}
 .adm .sec-ed input[type=text]{padding:9px 11px;font-size:14.5px;background:var(--surface)}
 @media (max-width:820px){.sec-ed-items li{grid-template-columns:minmax(0,1fr) auto}.sec-ed-items li input{grid-column:1}.sec-ed-items li button{grid-column:2;grid-row:1}}
+.nl-note{margin:28px 0 32px;padding:14px 18px;border-radius:var(--r-sm);background:var(--surface-2);color:var(--muted);font-size:13.5px;line-height:1.7}
