@@ -1,5 +1,34 @@
 [
   {
+    "id": "20261016-2",
+    "title": "더리드온 뉴스레터 · 10월 16일 (금)",
+    "category": "newsletter",
+    "date": "2026-10-16",
+    "vol": 1,
+    "sections": [
+      {
+        "title": "📮 국내 뉴스",
+        "items": [
+          {
+            "title": "대모비스, 중국서 피지컬 AI·로보틱스 파트너 찾는다",
+            "url": "https://www.econovill.com/news/articleView.html?idxno=753711",
+            "source": "이코노믹 리뷰 2026.10.15 13:11"
+          }
+        ]
+      },
+      {
+        "title": "🌍 해외 뉴스",
+        "items": [
+          {
+            "title": "어질리티 로보틱스와 처칠 캐피털 XI, 6억 2천만 달러 규모의 스팩 합병 11월 표결 추진",
+            "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPMmdILUR0OWZIakh4aExfd3FqU2NTajFscFdabUVnUzJHdXpqWVBScnloTEFZbFhPdVN4R3hiVFBIZkIyU25QWnpfaHg1bV9qNWNJeTNUcG11ZUpaaC1ZNnYteC1BRE5Lbk5UU3pMVi1UemZMMEN5dzMzdk9XUlRaaDJsOEwydUoxbGQ4WUVrTldxeU5mZ2FBR0llLVd2eXVDYi1KRWlGejU4SHRLRXNhcUF3Zno?oc=5&hl=ko&gl=KR&ceid=KR:ko",
+            "source": "PULSE 2.0 2026.10.15 10:42"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "20261016-1",
     "title": "더리드온 소식 게시판을 열었습니다",
     "category": "notice",
