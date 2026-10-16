@@ -189,6 +189,13 @@
   }
 
   /* 상세: news-view.html?id= / newsletter-view.html?id= */
+  // 글 보기 화면은 제목을 정한 뒤 페이지뷰를 보내 글(Vol.)별로 집계되게 한다.
+  function trackView() {
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', 'page_view', { page_title: document.title, page_location: location.href });
+    }
+  }
+
   function renderView(posts) {
     var root = document.getElementById('news-view');
     if (!root) return;
@@ -200,6 +207,7 @@
     if (i < 0) {
       root.innerHTML = '<p class="news-empty">글을 찾을 수 없습니다. 삭제되었거나 주소가 잘못되었습니다.</p>' +
         '<div class="article-actions"><a class="btn btn-navy" href="' + (letterPage ? 'newsletter.html' : 'news.html') + '">목록으로</a></div>';
+      trackView();
       return;
     }
     var p = posts[i], c = catOf(p);
@@ -207,6 +215,7 @@
     if (crumb && !letterPage) crumb.innerHTML = ' / <a href="news.html?category=' + esc(p.category) + '">' + esc(c.label) + '</a>';
     if (crumb && letterPage && p.vol) crumb.textContent = ' / Vol.' + p.vol;
     document.title = (vol(p) ? vol(p) + ' ' : '') + p.title + ' · 더리드온';
+    trackView();
 
     root.innerHTML = article(p, posts[i + 1], posts[i - 1]);
     if (isAdmin()) {
