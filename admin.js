@@ -69,6 +69,23 @@
       .catch(function (e) { if (e.status === 404) return []; throw e; });
   }
 
+  /* 공유용 글 페이지(p/*.html)를 지금 목록에 맞춰 다시 만들고, 지워진 글·임시저장 글의 페이지는 삭제.
+     실패해도 글 저장은 막지 않음 (다음 저장 때 다시 맞춰짐) */
+  function sharePages(ref, list) {
+    var S = window.LeadOnShare;
+    if (!S) return Promise.resolve([]);
+    var raw = function (p) { return api('/contents/' + p + '?ref=' + ref, { raw: true }); };
+    return Promise.all([raw('news-view.html'), raw('newsletter-view.html'),
+      api('/contents/' + S.DIR + '?ref=' + ref).catch(function (e) { if (e.status === 404) return []; throw e; })])
+      .then(function (r) {
+        var want = S.pages(list, { news: r[0], newsletter: r[1] });
+        var entries = Object.keys(want).map(function (p) { return { path: p, mode: '100644', type: 'blob', content: want[p] }; });
+        r[2].forEach(function (f) { if (f.type === 'file' && !want[f.path]) entries.push({ path: f.path, mode: '100644', type: 'blob', sha: null }); });
+        return entries;
+      })
+      .catch(function (e) { console.warn('공유 페이지를 만들지 못했습니다', e); return []; });
+  }
+
   /* 최신 상태에서 mutate(list)를 적용하고, 업로드 파일·삭제 파일과 함께 커밋 하나로 저장 */
   function commit(message, mutate, uploads, removes, retry) {
     var head, list;
@@ -77,10 +94,11 @@
       return Promise.all([api('/git/commits/' + head), readPosts(head)]);
     }).then(function (r) {
       list = sortPosts(mutate(r[1]));
-      return Promise.all(uploads.map(function (u) {
+      return Promise.all([Promise.all(uploads.map(function (u) {
         return api('/git/blobs', { method: 'POST', body: { content: u.b64, encoding: 'base64' } })
           .then(function (b) { return { path: u.path, mode: '100644', type: 'blob', sha: b.sha }; });
-      })).then(function (entries) {
+      })), sharePages(head, list)]).then(function (x) {
+        var entries = x[0].concat(x[1]);
         entries.push({ path: POSTS, mode: '100644', type: 'blob', content: JSON.stringify(list, null, 2) + '\n' });
         removes.forEach(function (p) { entries.push({ path: p, mode: '100644', type: 'blob', sha: null }); });
         return api('/git/trees', { method: 'POST', body: { base_tree: r[0].tree.sha, tree: entries } });

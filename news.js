@@ -27,7 +27,11 @@
   function isNew(s) { return (Date.now() - toDate(s).getTime()) / 864e5 <= NEW_DAYS; }
   function isLetter(p) { return p.category === 'newsletter'; }
   function listPage(p) { return isLetter(p) ? 'newsletter.html' : 'news.html'; }
-  function url(p) { return (isLetter(p) ? 'newsletter-view.html' : 'news-view.html') + '?id=' + encodeURIComponent(p.id); }
+  function viewUrl(p) { return (isLetter(p) ? 'newsletter-view.html' : 'news-view.html') + '?id=' + encodeURIComponent(p.id); }
+  // 공개된 글은 공유용 페이지(p/<id>.html)로 연결 — 카카오톡 등에 글 제목·사진이 미리보기로 나옴.
+  // 아직 만들어지지 않았으면 404.html이 글 보기 화면(viewUrl)으로 보냄
+  function shareable(p) { return !p.draft && /^[\w-]+$/.test(p.id); }
+  function url(p) { return shareable(p) ? '/p/' + p.id + '.html' : viewUrl(p); }
   function catOf(p) { return CATEGORIES[p.category] || CATEGORIES.news; }
   function vol(p) { return isLetter(p) && p.vol ? 'Vol.' + esc(p.vol) : ''; }
   // 첨부파일 링크는 상대 경로나 http(s)만 허용 (javascript: 등 차단)
@@ -200,8 +204,12 @@
     var root = document.getElementById('news-view');
     if (!root) return;
     var letterPage = !!root.hasAttribute('data-newsletter');
+    // 공유용 페이지(p/<id>.html)는 글 번호를 data-id로 갖고 있음
+    var shared = root.getAttribute('data-id');
+    var id = shared || new URLSearchParams(location.search).get('id');
+    var other = posts.filter(function (p) { return p.id === id && isLetter(p) !== letterPage; })[0];
+    if (other) { location.replace('/' + viewUrl(other)); return; }
     posts = posts.filter(function (p) { return isLetter(p) === letterPage; });
-    var id = new URLSearchParams(location.search).get('id');
     var i = -1;
     posts.forEach(function (p, k) { if (p.id === id) i = k; });
     if (i < 0) {
@@ -227,7 +235,7 @@
     btn.addEventListener('click', function () {
       var label = btn.textContent;
       var done = function (t) { btn.textContent = t; setTimeout(function () { btn.textContent = label; }, 1600); };
-      if (navigator.clipboard) navigator.clipboard.writeText(location.href).then(function () { done('✓ 복사되었습니다'); }, function () { done('복사에 실패했습니다'); });
+      if (navigator.clipboard) navigator.clipboard.writeText(shareable(p) ? location.origin + url(p) : location.href).then(function () { done('✓ 복사되었습니다'); }, function () { done('복사에 실패했습니다'); });
       else done('복사에 실패했습니다');
     });
   }
