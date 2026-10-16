@@ -10,34 +10,34 @@
         "title": "📮 국내 뉴스",
         "items": [
           {
-            "title": "현대모비스, 중국서 피지컬 AI·로보틱스 파트너 찾는다",
-            "url": "https://www.econovill.com/news/articleView.html?idxno=753711",
-            "source": "이코노믹 리뷰 2026.10.15 13:11"
+            "title": "육군, AI·로봇 결합한 미래전 시연…2040년 유무인복합부대 전환",
+            "url": "https://biz.heraldcorp.com/article/10903379",
+            "source": "헤럴드경제 2026.10.15 11:00"
           },
           {
-            "title": "인텔리빅스, 코스닥 발판 삼아 국방·로봇 AI 확대",
-            "url": "https://www.newspim.com/news/view/20261016000953",
-            "source": "뉴스핌 2026.10.16 13:41"
+            "title": "\"AI 해킹툴, 스캔 폭격하고 안전장치 뚫어\"... 티오리, '아르텍스' 분석 백서 발간",
+            "url": "https://www.boannews.com/news/articleView.html?idxno=146407",
+            "source": "보안뉴스 2026.10.15 10:17"
           },
           {
-            "title": "한국투자증권, '베슬AI'와 GPU 파이낸싱 업무협약 체결",
-            "url": "https://supple.kr/news/cmvai7zx200a32571glei3p8j",
-            "source": "머니투데이 2026.10.16 13:56"
+            "title": "센스톤, 과기정통부 피지컬AI 보안 과제에서 'OT 구간 보안' 기술 개발 맡는다",
+            "url": "https://www.boannews.com/news/articleView.html?idxno=146445",
+            "source": "보안뉴스 2026.10.16 11:43"
           },
           {
-            "title": "스마일샤크, AWS 데이터 컴피턴시 애널리틱스 부문 획득…\"데이터 환경 현대화 역량 입증\"",
-            "url": "https://www.aitimes.com/news/articleView.html?idxno=216320",
-            "source": "AI타임스 2026.10.16 10:54"
-          },
-          {
-            "title": "쓰리빌리언, 인간유전학 학술대회서 AI 유전자 진단 연구 4건 발표",
-            "url": "https://www.newspim.com/news/view/20261016000393",
-            "source": "뉴스핌 2026.10.16 10:44"
+            "title": "이노뎁-로보티즈AI, 자율주행 순찰로봇 기반 이동형 AI 관제 사업 추진",
+            "url": "https://www.boannews.com/news/articleView.html?idxno=146436",
+            "source": "보안뉴스 2026.10.16 10:26"
           },
           {
             "title": "LG유플러스, 유럽 통신 전시회서 AI 기반 와이파이 기술 공개",
             "url": "http://www.dailysmart.co.kr/news/articleView.html?idxno=131093",
             "source": "스마트경제 2026.10.16 10:00"
+          },
+          {
+            "title": "현대모비스, 중국서 피지컬 AI·로보틱스 파트너 찾는다",
+            "url": "https://www.econovill.com/news/articleView.html?idxno=753711",
+            "source": "이코노믹 리뷰 2026.10.15 13:11"
           }
         ]
       },
@@ -45,19 +45,19 @@
         "title": "🌍 해외 뉴스",
         "items": [
           {
-            "title": "어질리티 로보틱스와 처칠 캐피털 XI, 6억 2천만 달러 규모의 스팩 합병 11월 표결 추진",
-            "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPMmdILUR0OWZIakh4aExfd3FqU2NTajFscFdabUVnUzJHdXpqWVBScnloTEFZbFhPdVN4R3hiVFBIZkIyU25QWnpfaHg1bV9qNWNJeTNUcG11ZUpaaC1ZNnYteC1BRE5Lbk5UU3pMVi1UemZMMEN5dzMzdk9XUlRaaDJsOEwydUoxbGQ4WUVrTldxeU5mZ2FBR0llLVd2eXVDYi1KRWlGejU4SHRLRXNhcUF3Zno?oc=5&hl=ko&gl=KR&ceid=KR:ko",
-            "source": "PULSE 2.0 2026.10.15 10:42"
+            "title": "허사비스 \"AI 에이전트 해킹, 시스템 보안 강화 촉구하는 조기 경고\"",
+            "url": "https://www.aitimes.com/news/articleView.html?idxno=216292",
+            "source": "AI타임스 2026.10.15 16:14"
           },
           {
-            "title": "앤트로픽, 첫 투자자 설명회 뒤 IPO 기대 하향…\"몸값 2조→1.5조 논의\"",
-            "url": "https://www.aitimes.com/news/articleView.html?idxno=216328",
-            "source": "AI타임스 2026.10.16 13:17"
+            "title": "55달러 TV 박스로 AI 구동... 앤트로픽 \"스스로 퍼지는 AI 웜, 이르면 몇 달 안에\"",
+            "url": "https://www.boannews.com/news/articleView.html?idxno=146374",
+            "source": "보안뉴스 2026.10.14 16:45"
           },
           {
-            "title": "FTC, 오픈AI·앤트로픽에 소환장 발부…\"AI 안전사고·소비자 피해 조사\"",
-            "url": "https://www.aitimes.com/news/articleView.html?idxno=216326",
-            "source": "AI타임스 2026.10.16 12:35"
+            "title": "\"미토스급 AI 위협 현실화\"…팔로알토네트웍스, 10대 대응 전략 제시",
+            "url": "https://www.boannews.com/news/articleView.html?idxno=146397",
+            "source": "보안뉴스 2026.10.14 18:37"
           },
           {
             "title": "엔비디아, 기업용 에이전트 겨냥 120B '네모트론 3.5 슈퍼 VL' 오픈 공개",
@@ -70,9 +70,9 @@
             "source": "AI타임스 2026.10.16 06:17"
           },
           {
-            "title": "미국 8개 주, 오픈AI 상대 집단 소송...\"챗GPT가 자해·폭력 부추겨\"",
-            "url": "https://www.aitimes.com/news/articleView.html?idxno=216306",
-            "source": "AI타임스 2026.10.15 16:55"
+            "title": "어질리티 로보틱스와 처칠 캐피털 XI, 6억 2천만 달러 규모의 스팩 합병 11월 표결 추진",
+            "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPMmdILUR0OWZIakh4aExfd3FqU2NTajFscFdabUVnUzJHdXpqWVBScnloTEFZbFhPdVN4R3hiVFBIZkIyU25QWnpfaHg1bV9qNWNJeTNUcG11ZUpaaC1ZNnYteC1BRE5Lbk5UU3pMVi1UemZMMEN5dzMzdk9XUlRaaDJsOEwydUoxbGQ4WUVrTldxeU5mZ2FBR0llLVd2eXVDYi1KRWlGejU4SHRLRXNhcUF3Zno?oc=5&hl=ko&gl=KR&ceid=KR:ko",
+            "source": "PULSE 2.0 2026.10.15 10:42"
           }
         ]
       }
