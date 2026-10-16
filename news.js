@@ -1,12 +1,16 @@
-/* 소식 게시판: news/posts.json 의 글을 읽어 메뉴·홈·목록·상세 화면을 그립니다.
-   글이 하나도 없으면 홈의 소식 섹션과 푸터 링크를 숨기고 기존 화면을 그대로 둡니다. 관리자 글쓰기 화면은 admin.html/admin.js. */
+/* 소식·뉴스레터 게시판: news/posts.json 의 글을 읽어 홈·목록·상세 화면을 그립니다.
+   category가 newsletter인 글은 뉴스레터(newsletter.html), 나머지는 소식(news.html)에 표시합니다.
+   글이 하나도 없으면 홈의 해당 섹션과 푸터 링크를 숨깁니다. 관리자 글쓰기 화면은 admin.html/admin.js. */
 (function () {
   var CATEGORIES = {
     notice: { label: '공지', en: 'NOTICE' },
     press: { label: '보도자료', en: 'PRESS' },
-    news: { label: '사업소식', en: 'NEWS' }
+    news: { label: '사업소식', en: 'NEWS' },
+    newsletter: { label: '뉴스레터', en: 'NEWSLETTER' }
   };
+  var NEWS_CATS = ['notice', 'press', 'news'];
   var PER_PAGE = 9;
+  var LETTERS_PER_PAGE = 20;
   var MAX_PINNED = 3;
   var NEW_DAYS = 7;
 
@@ -18,26 +22,50 @@
   function toDate(s) { var p = String(s).split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
   function fmt(s) { return String(s).replace(/-/g, '.'); }
   function isNew(s) { return (Date.now() - toDate(s).getTime()) / 864e5 <= NEW_DAYS; }
-  function url(p) { return 'news-view.html?id=' + encodeURIComponent(p.id); }
+  function isLetter(p) { return p.category === 'newsletter'; }
+  function listPage(p) { return isLetter(p) ? 'newsletter.html' : 'news.html'; }
+  function url(p) { return (isLetter(p) ? 'newsletter-view.html' : 'news-view.html') + '?id=' + encodeURIComponent(p.id); }
   function catOf(p) { return CATEGORIES[p.category] || CATEGORIES.news; }
+  function vol(p) { return isLetter(p) && p.vol ? 'Vol.' + esc(p.vol) : ''; }
   // 첨부파일 링크는 상대 경로나 http(s)만 허용 (javascript: 등 차단)
   function safeHref(h) { h = String(h || ''); return /^\s*[a-z][a-z0-9+.-]*:/i.test(h) && !/^https?:\/\//i.test(h) ? '#' : h; }
+  function excerpt(p, n) {
+    var t = String(p.body || '').split(/\n\s*\n/)[0].replace(/\s+/g, ' ').trim();
+    return t.length > n ? t.slice(0, n) + '…' : t;
+  }
 
   function thumb(p) {
     if (p.cover) return '<img src="' + esc(p.cover) + '" alt="' + esc(p.coverAlt || '') + '" loading="lazy" decoding="async">';
     var c = catOf(p);
     return '<div class="news-ph" role="img" aria-label="' + esc(c.label) + ' 기본 이미지"><img src="mark.png" alt="" width="34" height="26">' +
-      '<span class="news-ph-cat">' + c.en + '</span><span class="news-ph-word">THELEAD<b>ON</b></span></div>';
+      '<span class="news-ph-cat">' + c.en + (vol(p) ? ' · ' + vol(p).toUpperCase() : '') + '</span><span class="news-ph-word">THELEAD<b>ON</b></span></div>';
   }
   function card(p) {
     return '<article class="news-card"><a href="' + url(p) + '"><div class="news-thumb">' + thumb(p) + '</div>' +
-      '<div class="news-body"><div class="news-meta"><span class="news-cat">' + esc(catOf(p).label) + '</span>' +
+      '<div class="news-body"><div class="news-meta"><span class="news-cat">' + esc(catOf(p).label) + (vol(p) ? ' ' + vol(p) : '') + '</span>' +
       (isNew(p.date) ? '<span class="news-new">NEW</span>' : '') + '</div>' +
       '<h3>' + esc(p.title) + '</h3><time class="news-date" datetime="' + esc(p.date) + '">' + fmt(p.date) + '</time></div></a></article>';
   }
   function splitPinned(list) {
     var pinned = list.filter(function (p) { return p.pinned; }).slice(0, MAX_PINNED);
     return { pinned: pinned, rest: list.filter(function (p) { return pinned.indexOf(p) < 0; }) };
+  }
+  function pager(page, pages, link) {
+    if (pages < 2) return '';
+    var html = '<nav class="pager" aria-label="페이지">' +
+      (page > 1 ? '<a href="' + link(page - 1) + '" aria-label="이전 페이지">‹</a>' : '<span aria-hidden="true">‹</span>');
+    for (var n = 1; n <= pages; n++) html += '<a href="' + link(n) + '" aria-label="' + n + '페이지"' + (n === page ? ' aria-current="page"' : '') + '>' + n + '</a>';
+    return html + (page < pages ? '<a href="' + link(page + 1) + '" aria-label="다음 페이지">›</a>' : '<span aria-hidden="true">›</span>') + '</nav>';
+  }
+  function qs(base, params) {
+    var s = new URLSearchParams();
+    Object.keys(params).forEach(function (k) { if (params[k]) s.set(k, params[k]); });
+    var str = s.toString();
+    return base + (str ? '?' + str : '');
+  }
+  function adminBar(cat) {
+    return isAdmin() ? '<div class="admin-bar"><a class="btn btn-navy" href="admin.html?new=' + cat + '">+ 글쓰기</a>' +
+      '<a class="btn btn-line" href="admin.html' + (cat === 'newsletter' ? '?tab=newsletter' : '') + '">글 관리</a></div>' : '';
   }
 
   function load() {
@@ -51,39 +79,44 @@
       .catch(function () { return []; });
   }
 
-  function showNav(on) {
-    document.querySelectorAll('[data-news-link]').forEach(function (a) { a.hidden = !on; });
+  function showLinks(attr, on) {
+    document.querySelectorAll('[' + attr + ']').forEach(function (a) { a.hidden = !on; });
   }
 
-  /* 홈: 글이 있으면 '주요 사업 영역' 자리에 최근 소식 3건 */
-  function renderHome(posts) {
+  /* 홈: 소식이 있으면 '주요 사업 영역' 자리에 최근 소식 3건, 뉴스레터가 있으면 최신호 띠 */
+  function renderHome(news, letters) {
     var sec = document.getElementById('home-news');
-    if (!sec || !posts.length) return;
-    sec.querySelector('[data-news-grid]').innerHTML = posts.slice(0, 3).map(card).join('');
-    sec.hidden = false;
-    var biz = document.getElementById('home-business');
-    if (biz) biz.hidden = true;
+    if (sec && news.length) {
+      sec.querySelector('[data-news-grid]').innerHTML = news.slice(0, 3).map(card).join('');
+      sec.hidden = false;
+      var biz = document.getElementById('home-business');
+      if (biz) biz.hidden = true;
+    }
+    var strip = document.getElementById('home-letter');
+    if (strip && letters.length) {
+      var p = letters[0];
+      strip.querySelector('[data-letter-strip]').innerHTML =
+        '<a class="nl-strip" href="' + url(p) + '"><span class="eyebrow">Newsletter</span>' +
+        '<span class="nl-strip-body"><b>' + (isNew(p.date) ? '이번 주 뉴스레터' : '최신 뉴스레터') + '</b>' +
+        '<span class="nl-strip-title">' + (vol(p) ? vol(p) + ' · ' : '') + esc(p.title) + '</span></span>' +
+        '<span class="nl-strip-go" aria-hidden="true">→</span></a>';
+      strip.hidden = false;
+    }
   }
 
-  /* 목록: news.html?category=&page= */
+  /* 소식 목록: news.html?category=&page= */
   function renderList(posts) {
     var root = document.getElementById('news-list');
     if (!root) return;
     var q = new URLSearchParams(location.search);
-    var cat = CATEGORIES[q.get('category')] ? q.get('category') : '';
+    var cat = NEWS_CATS.indexOf(q.get('category')) >= 0 ? q.get('category') : '';
     var inCat = posts.filter(function (p) { return !cat || p.category === cat; });
     var parts = splitPinned(inCat);
     var pages = Math.max(1, Math.ceil(parts.rest.length / PER_PAGE));
     var page = Math.min(Math.max(parseInt(q.get('page'), 10) || 1, 1), pages);
-    var link = function (c, n) {
-      var s = new URLSearchParams();
-      if (c) s.set('category', c);
-      if (n > 1) s.set('page', n);
-      var str = s.toString();
-      return 'news.html' + (str ? '?' + str : '');
-    };
+    var link = function (c, n) { return qs('news.html', { category: c, page: n > 1 ? n : '' }); };
 
-    var tabs = [['', '전체']].concat(Object.keys(CATEGORIES).map(function (k) { return [k, CATEGORIES[k].label]; }));
+    var tabs = [['', '전체']].concat(NEWS_CATS.map(function (k) { return [k, CATEGORIES[k].label]; }));
     var html = '<nav class="news-tabs" aria-label="분류">' + tabs.map(function (t) {
       return '<a href="' + link(t[0], 1) + '"' + (t[0] === cat ? ' aria-current="page"' : '') + '>' + t[1] + '</a>';
     }).join('') + '</nav>';
@@ -97,37 +130,75 @@
     var items = parts.rest.slice((page - 1) * PER_PAGE, page * PER_PAGE);
     if (items.length) html += '<div class="news-grid">' + items.map(card).join('') + '</div>';
     else if (!(page === 1 && parts.pinned.length)) html += '<p class="news-empty">등록된 글이 없습니다.</p>';
+    html += pager(page, pages, function (n) { return link(cat, n); });
 
-    if (pages > 1) {
-      html += '<nav class="pager" aria-label="페이지">' +
-        (page > 1 ? '<a href="' + link(cat, page - 1) + '" aria-label="이전 페이지">‹</a>' : '<span aria-hidden="true">‹</span>');
-      for (var n = 1; n <= pages; n++) html += '<a href="' + link(cat, n) + '" aria-label="' + n + '페이지"' + (n === page ? ' aria-current="page"' : '') + '>' + n + '</a>';
-      html += (page < pages ? '<a href="' + link(cat, page + 1) + '" aria-label="다음 페이지">›</a>' : '<span aria-hidden="true">›</span>') + '</nav>';
-    }
-    if (isAdmin()) {
-      html = '<div class="admin-bar"><a class="btn btn-navy" href="admin.html?new=' + (cat || 'notice') + '">+ 글쓰기</a>' +
-        '<a class="btn btn-line" href="admin.html">글 관리</a></div>' + html;
-    }
-    root.innerHTML = html;
+    root.innerHTML = adminBar(cat || 'notice') + html;
     if (cat) document.title = CATEGORIES[cat].label + ' - 소식 · 더리드온';
   }
 
-  /* 상세: news-view.html?id= */
+  /* 뉴스레터 목록: newsletter.html?year=&page= — 1페이지 맨 위에 최신호를 크게 */
+  function renderLetters(letters) {
+    var root = document.getElementById('newsletter-list');
+    if (!root) return;
+    var q = new URLSearchParams(location.search);
+    var years = [];
+    letters.forEach(function (p) { var y = p.date.slice(0, 4); if (years.indexOf(y) < 0) years.push(y); });
+    var year = years.indexOf(q.get('year')) >= 0 ? q.get('year') : '';
+    var list = letters.filter(function (p) { return !year || p.date.slice(0, 4) === year; });
+    var feature = !year && (parseInt(q.get('page'), 10) || 1) === 1 ? list[0] : null;
+    var rest = year ? list : list.slice(1);
+    var pages = Math.max(1, Math.ceil(rest.length / LETTERS_PER_PAGE));
+    var page = Math.min(Math.max(parseInt(q.get('page'), 10) || 1, 1), pages);
+    var link = function (y, n) { return qs('newsletter.html', { year: y, page: n > 1 ? n : '' }); };
+    var html = '';
+
+    if (!letters.length) {
+      root.innerHTML = adminBar('newsletter') + '<p class="news-empty">아직 발행된 뉴스레터가 없습니다.</p>';
+      return;
+    }
+    if (feature) {
+      html += '<article class="nl-feature"><a href="' + url(feature) + '"><div class="news-thumb">' + thumb(feature) + '</div>' +
+        '<div class="nl-feature-body"><div class="news-meta"><span class="news-cat">' + (vol(feature) || '뉴스레터') + '</span>' +
+        (isNew(feature.date) ? '<span class="news-new">NEW</span>' : '') + '</div>' +
+        '<h2>' + esc(feature.title) + '</h2>' + (excerpt(feature, 140) ? '<p>' + esc(excerpt(feature, 140)) + '</p>' : '') +
+        '<time class="news-date" datetime="' + esc(feature.date) + '">' + fmt(feature.date) + '</time><span class="more-link">읽어보기 →</span></div></a></article>';
+    }
+    if (years.length > 1 || year) {
+      html += '<nav class="news-tabs" aria-label="연도">' + [['', '전체']].concat(years.map(function (y) { return [y, y + '년']; })).map(function (t) {
+        return '<a href="' + link(t[0], 1) + '"' + (t[0] === year ? ' aria-current="page"' : '') + '>' + t[1] + '</a>';
+      }).join('') + '</nav>';
+    }
+    var items = rest.slice((page - 1) * LETTERS_PER_PAGE, page * LETTERS_PER_PAGE);
+    if (items.length) {
+      html += (feature ? '<h2 class="nl-past">지난 뉴스레터</h2>' : '') + '<ul class="nl-list">' + items.map(function (p) {
+        return '<li><a href="' + url(p) + '"><span class="nl-vol">' + (vol(p) || '-') + '</span><span class="nl-title">' + esc(p.title) + '</span>' +
+          '<time class="news-date" datetime="' + esc(p.date) + '">' + fmt(p.date) + '</time></a></li>';
+      }).join('') + '</ul>';
+    }
+    html += pager(page, pages, function (n) { return link(year, n); });
+    root.innerHTML = adminBar('newsletter') + html;
+    if (year) document.title = year + '년 - 뉴스레터 · 더리드온';
+  }
+
+  /* 상세: news-view.html?id= / newsletter-view.html?id= */
   function renderView(posts) {
     var root = document.getElementById('news-view');
     if (!root) return;
+    var letterPage = !!root.hasAttribute('data-newsletter');
+    posts = posts.filter(function (p) { return isLetter(p) === letterPage; });
     var id = new URLSearchParams(location.search).get('id');
     var i = -1;
     posts.forEach(function (p, k) { if (p.id === id) i = k; });
     if (i < 0) {
       root.innerHTML = '<p class="news-empty">글을 찾을 수 없습니다. 삭제되었거나 주소가 잘못되었습니다.</p>' +
-        '<div class="article-actions"><a class="btn btn-navy" href="news.html">목록으로</a></div>';
+        '<div class="article-actions"><a class="btn btn-navy" href="' + (letterPage ? 'newsletter.html' : 'news.html') + '">목록으로</a></div>';
       return;
     }
     var p = posts[i], c = catOf(p);
     var crumb = document.querySelector('[data-news-crumb]');
-    if (crumb) crumb.innerHTML = ' / <a href="news.html?category=' + esc(p.category) + '">' + esc(c.label) + '</a>';
-    document.title = p.title + ' · 더리드온';
+    if (crumb && !letterPage) crumb.innerHTML = ' / <a href="news.html?category=' + esc(p.category) + '">' + esc(c.label) + '</a>';
+    if (crumb && letterPage && p.vol) crumb.textContent = ' / Vol.' + p.vol;
+    document.title = (vol(p) ? vol(p) + ' ' : '') + p.title + ' · 더리드온';
 
     root.innerHTML = article(p, posts[i + 1], posts[i - 1]);
     if (isAdmin()) {
@@ -158,17 +229,17 @@
       return '<li><a href="' + esc(safeHref(f.href)) + '" download="' + esc(f.name) + '">📄 ' + esc(f.name) + (f.size ? ' <small>(' + esc(f.size) + ')</small>' : '') + '</a></li>';
     }).join('') + '</ul></div>' : '';
     var pn = function (q, label) {
-      return q ? '<a href="' + url(q) + '"><span class="label">' + label + '</span><b>' + esc(q.title) + '</b><span class="news-date">' + fmt(q.date) + '</span></a>' : '';
+      return q ? '<a href="' + url(q) + '"><span class="label">' + label + '</span><b>' + (vol(q) ? vol(q) + ' ' : '') + esc(q.title) + '</b><span class="news-date">' + fmt(q.date) + '</span></a>' : '';
     };
 
     return '<article class="article">' +
-      '<div class="article-meta"><span class="news-cat">' + esc(c.label) + '</span><time class="news-date" datetime="' + esc(p.date) + '">' + fmt(p.date) + '</time></div>' +
+      '<div class="article-meta"><span class="news-cat">' + esc(c.label) + (vol(p) ? ' ' + vol(p) : '') + '</span><time class="news-date" datetime="' + esc(p.date) + '">' + fmt(p.date) + '</time></div>' +
       '<h1>' + esc(p.title) + '</h1>' +
       (p.cover ? '<figure class="article-cover"><img src="' + esc(p.cover) + '" alt="' + esc(p.coverAlt || '') + '">' + (p.coverAlt ? '<figcaption>' + esc(p.coverAlt) + '</figcaption>' : '') + '</figure>' : '') +
       '<div class="prose">' + body + imgs + '</div>' +
       (/^https?:\/\//i.test(p.link || '') ? '<p class="article-source"><a class="btn btn-line" href="' + esc(p.link) + '" target="_blank" rel="noopener">원문 기사 보기 ↗</a></p>' : '') + files +
       (prev || next ? '<nav class="prevnext" aria-label="이전·다음 글">' + pn(prev, '이전 글') + pn(next, '다음 글') + '</nav>' : '') +
-      '<div class="article-actions"><a class="btn btn-navy" href="news.html">목록</a><button class="btn btn-line" type="button" data-copy-link>🔗 링크 복사</button></div>' +
+      '<div class="article-actions"><a class="btn btn-navy" href="' + listPage(p) + '">목록</a><button class="btn btn-line" type="button" data-copy-link>🔗 링크 복사</button></div>' +
       '</article>';
   }
 
@@ -180,9 +251,13 @@
   window.LeadOnNews = { CATEGORIES: CATEGORIES, card: card, article: article, esc: esc };
 
   load().then(function (posts) {
-    showNav(posts.length > 0);
-    renderHome(posts);
-    renderList(posts);
+    var news = posts.filter(function (p) { return !isLetter(p); });
+    var letters = posts.filter(isLetter);
+    showLinks('data-news-link', news.length > 0);
+    showLinks('data-letter-link', letters.length > 0);
+    renderHome(news, letters);
+    renderList(news);
+    renderLetters(letters);
     renderView(posts);
   });
 })();

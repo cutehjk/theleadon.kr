@@ -146,7 +146,8 @@
     $('list').innerHTML = list.map(function (p) {
       var c = CATS[p.category] || CATS.news;
       return '<li><span class="news-cat c">' + esc(c.label) + '</span>' +
-        '<span style="min-width:0;display:flex;align-items:center"><a class="t" href="news-view.html?id=' + encodeURIComponent(p.id) + '" target="_blank" rel="noopener">' + esc(p.title) + '</a>' +
+        '<span style="min-width:0;display:flex;align-items:center"><a class="t" href="' + (isLetter(p) ? 'newsletter-view' : 'news-view') + '.html?id=' + encodeURIComponent(p.id) + '" target="_blank" rel="noopener">' +
+        (isLetter(p) && p.vol ? 'Vol.' + esc(p.vol) + ' ' : '') + esc(p.title) + '</a>' +
         (p.pinned ? '<span class="tag">고정</span>' : '') + (p.draft ? '<span class="tag">임시저장</span>' : '') + '</span>' +
         '<span class="news-date">' + esc(String(p.date).replace(/-/g, '.')) + '</span>' +
         '<span class="acts"><button type="button" data-edit="' + esc(p.id) + '">수정</button><button type="button" class="del" data-del="' + esc(p.id) + '">삭제</button></span></li>';
@@ -198,6 +199,8 @@
     $('ed-draft').checked = !!(p && p.draft);
     $('ed-body').value = p ? p.body || '' : '';
     $('ed-link').value = p ? p.link || '' : '';
+    $('ed-vol').value = p && p.vol ? p.vol : nextVol();
+    toggleVol();
     $('preview').hidden = true;
     renderFiles();
     dirty = false;
@@ -205,6 +208,16 @@
     msg('');
     window.scrollTo(0, $('editor').getBoundingClientRect().top + scrollY - 90);
     $('ed-subject').focus({ preventScroll: true });
+  }
+  function isLetter(p) { return p.category === 'newsletter'; }
+  function nextVol() {
+    return posts.filter(isLetter).reduce(function (m, p) { return Math.max(m, +p.vol || 0); }, 0) + 1;
+  }
+  // 뉴스레터를 고르면 호수 칸을 보이고, 뉴스레터에는 쓰지 않는 '고정' 옵션은 숨김
+  function toggleVol() {
+    var on = ((document.querySelector('input[name=cat]:checked') || {}).value) === 'newsletter';
+    $('fld-vol').hidden = !on;
+    $('lb-pinned').hidden = on;
   }
   function src(item) { return item.blob ? item.url : item.path; }
   function renderFiles() {
@@ -248,7 +261,8 @@
       pinned: $('ed-pinned').checked,
       draft: $('ed-draft').checked,
       body: $('ed-body').value.replace(/\r\n/g, '\n').trim(),
-      link: $('ed-link').value.trim()
+      link: $('ed-link').value.trim(),
+      vol: parseInt($('ed-vol').value, 10) || 0
     };
   }
   function validate(p) {
@@ -256,6 +270,11 @@
     if (!/^\d{4}-\d{2}-\d{2}$/.test(p.date)) return ['ed-date', '날짜를 입력해 주세요.'];
     if (p.link && !/^https?:\/\//i.test(p.link)) return ['ed-link', '원문 링크는 http:// 또는 https://로 시작해야 합니다.'];
     if (ed.cover && !ed.cover.alt.trim()) return [null, '대표 사진의 설명을 적어 주세요. (시각장애인 안내와 검색에 쓰입니다)'];
+    if (isLetter(p)) {
+      if (p.vol < 1) return ['ed-vol', '호수(Vol.)를 1 이상의 숫자로 입력해 주세요.'];
+      if (posts.some(function (q) { return isLetter(q) && q.id !== p.id && +q.vol === p.vol; })) return ['ed-vol', 'Vol.' + p.vol + '은(는) 이미 있습니다. 다른 호수를 입력해 주세요.'];
+      p.pinned = false;
+    }
     if (p.pinned && posts.filter(function (q) { return q.pinned && q.id !== p.id; }).length >= MAX_PINNED) {
       return ['ed-pinned', '고정 글은 최대 ' + MAX_PINNED + '개입니다. 다른 글의 고정을 먼저 풀어 주세요.'];
     }
@@ -264,7 +283,7 @@
 
   function preview() {
     var p = formPost();
-    var view = { id: p.id || 'preview', title: p.title || '(제목 없음)', category: p.category, date: p.date || today(), body: p.body, link: p.link };
+    var view = { id: p.id || 'preview', title: p.title || '(제목 없음)', category: p.category, date: p.date || today(), body: p.body, link: p.link, vol: isLetter(p) ? p.vol : undefined };
     if (ed.cover) { view.cover = src(ed.cover); view.coverAlt = ed.cover.alt; }
     view.images = ed.images.map(function (im) { return { src: src(im), alt: im.alt }; });
     view.attachments = ed.files.map(function (f) { return { name: f.name, href: '#', size: f.size }; });
@@ -299,6 +318,7 @@
     if (!p.draft) delete p.draft;
     if (!p.body) delete p.body;
     if (!p.link) delete p.link;
+    if (!isLetter(p)) delete p.vol;
 
     var btn = $('btn-save'), label = btn.textContent;
     btn.disabled = true; btn.textContent = '저장 중…';
@@ -306,7 +326,7 @@
 
     Promise.all(uploads.map(function (u) { return readB64(u.blob).then(function (b) { u.b64 = b; return u; }); }))
       .then(function (ups) {
-        return commit((ed.id ? '소식 수정: ' : '소식 등록: ') + p.title, function (list) {
+        return commit((isLetter(p) ? '뉴스레터' : '소식') + (ed.id ? ' 수정: ' : ' 등록: ') + (isLetter(p) ? 'Vol.' + p.vol + ' ' : '') + p.title, function (list) {
           if (!p.id) {
             var n = 1;
             while (list.some(function (q) { return q.id === stamp + '-' + n; })) n++;
@@ -375,6 +395,7 @@
   $('editor').addEventListener('submit', save);
   $('editor').addEventListener('input', function (e) {
     dirty = true;
+    if (e.target.name === 'cat') toggleVol();
     var k = e.target.getAttribute('data-alt');
     if (k) { var s = k.split(':'); (s[0] === 'cover' ? ed.cover : ed[s[0]][+s[1]]).alt = e.target.value; }
   });
@@ -404,6 +425,7 @@
   connect(t).then(function (ok) {
     if (!ok) return;
     var editId = q.get('edit'), newCat = q.get('new');
+    if (CATS[q.get('tab')]) tab = q.get('tab');
     var p = editId && posts.filter(function (x) { return x.id === editId; })[0];
     if (p) openEditor(p);
     else if (newCat !== null) openEditor(null, CATS[newCat] ? newCat : '');

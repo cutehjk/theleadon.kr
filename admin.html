@@ -17,7 +17,7 @@
 <body>
 <header class="site-header"><div class="wrap">
 <a class="brand" href="index.html" aria-label="더리드온 홈"><span class="mark"><img src="mark.png" alt="" width="30" height="23"></span><span><span class="word">THELEAD<b>ON</b></span><small>LEAD TODAY, GROW TOMORROW</small></span></a>
-<nav class="nav" aria-label="주요 메뉴"><a href="about.html">회사소개</a><a href="business.html">사업영역</a><a href="vision.html">AI 교육혁신</a><a href="organization.html">조직·인력</a><a href="news.html">소식</a><a href="contact.html">문의</a></nav></div></header>
+<nav class="nav" aria-label="주요 메뉴"><a href="about.html">회사소개</a><a href="business.html">사업영역</a><a href="vision.html">AI 교육혁신</a><a href="organization.html">조직·인력</a><a href="news.html">소식</a><a href="newsletter.html">뉴스레터</a><a href="contact.html">문의</a></nav></div></header>
 <main>
 <section class="page-head"><div class="wrap"><span class="eyebrow">Admin</span><h1>소식 관리</h1><p>공지 · 보도자료 · 사업소식 글을 쓰고 고칩니다.</p>
 <div class="crumbs"><a href="index.html">홈</a> / <a href="news.html">소식</a> / 관리</div></div></section>
@@ -62,8 +62,9 @@
 <div class="fld"><label for="ed-subject">제목</label><input type="text" id="ed-subject" maxlength="120" required></div>
 <div class="row2">
 <div class="fld"><label for="ed-date">날짜</label><input type="date" id="ed-date" required></div>
-<div class="fld"><span class="lb">옵션</span><div class="checks"><label><input type="checkbox" id="ed-pinned"> 목록 맨 위에 고정</label><label><input type="checkbox" id="ed-draft"> 임시저장 (홈페이지에 안 보임)</label></div></div>
+<div class="fld"><span class="lb">옵션</span><div class="checks"><label id="lb-pinned"><input type="checkbox" id="ed-pinned"> 목록 맨 위에 고정</label><label><input type="checkbox" id="ed-draft"> 임시저장 (홈페이지에 안 보임)</label></div></div>
 </div>
+<div class="fld" id="fld-vol" hidden><label for="ed-vol">호수 (Vol.) <small>(다음 번호가 자동으로 들어갑니다)</small></label><input type="number" id="ed-vol" min="1" step="1" style="max-width:180px"></div>
 <div class="fld"><span class="lb">대표 사진 <small>(가로 사진 권장 · 없으면 기본 이미지)</small></span>
 <ul class="files-ed" id="ed-cover"></ul>
 <label class="pick" id="pick-cover">📷 사진 선택<input type="file" accept="image/*" id="in-cover"></label></div>
@@ -88,10 +89,10 @@
 <div><a class="brand" href="index.html"><span class="mark"><img src="mark.png" alt="" width="30" height="23"></span><span><span class="word">THELEAD<b>ON</b></span><small>LEAD TODAY, GROW TOMORROW</small></span></a>
 <p style="margin-top:18px;max-width:36ch">교육과 기술을 연결하여 사람과 조직의 성장을 지원하는 AI·에듀테크 전문기업</p></div>
 <div><h5>회사</h5><ul><li><a href="about.html">회사소개</a></li><li><a href="business.html">사업영역</a></li><li><a href="vision.html">AI 교육혁신 비전</a></li><li><a href="organization.html">조직·인력</a></li></ul></div>
-<div><h5>문의</h5><ul><li data-news-link hidden><a href="news.html">소식</a></li><li><a href="contact.html">문의 안내</a></li></ul></div>
+<div><h5>문의</h5><ul><li data-news-link hidden><a href="news.html">소식</a></li><li data-letter-link hidden><a href="newsletter.html">뉴스레터</a></li><li><a href="contact.html">문의 안내</a></li></ul></div>
 <div class="legal"><span>주식회사 더리드온 (The LeadOn)</span><span>© 2026 The LeadOn. All rights reserved.</span></div>
 </div></footer>
-<script src="news.js?v=3"></script>
-<script src="admin.js?v=3"></script>
+<script src="news.js?v=4"></script>
+<script src="admin.js?v=4"></script>
 </body>
 </html>
