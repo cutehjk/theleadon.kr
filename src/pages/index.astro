@@ -1,0 +1,50 @@
+---
+import Base from '../layouts/Base.astro';
+import NewsCard from '../components/NewsCard.astro';
+import { getPosts } from '../lib/news';
+
+const recent = (await getPosts()).slice(0, 3);
+---
+<Base description="주식회사 더리드온은 대학원 교육운영 경험을 바탕으로 교육운영·AI 콘텐츠·디지털 홍보를 하나로 제공하는 AI·에듀테크 전문기업입니다.">
+
+<section class="hero"><div class="wrap">
+<div><span class="tag">LEAD TODAY, GROW TOMORROW</span>
+<h1>사람을 잇고 가능성을 키우는<br>교육의 새로운 기준, <em>더리드온</em></h1>
+<div class="rule"></div>
+<p class="sub">더리드온은 대학원 현장 운영 경험을 기반으로 교육 운영 · AI · 콘텐츠 · 디지털 기술을 결합하여 교육 서비스의 새로운 가치를 만들어갑니다.</p>
+<div class="actions"><a class="btn btn-brass" href="/business/">사업영역 보기 <span class="arrow">→</span></a><a class="btn btn-ghost" href="/about/">회사소개</a></div></div>
+<div class="hero-photo"><img src="/hero.jpg" alt="도시를 바라보는 사람들과 책상 위의 리더십 도서. LEAD TOMORROW 문구" width="654" height="706"></div>
+</div>
+<div class="values-strip"><div class="wrap"><span>PEOPLE</span><span>KNOWLEDGE</span><span>NETWORK</span><span>OPPORTUNITY</span><span>A BETTER WORLD</span></div></div>
+</section>
+
+<section class="section"><div class="wrap">
+<div class="sec-head"><span class="eyebrow">Business</span><h2>더리드온 주요 사업 영역</h2><p>교육운영의 전문성과 AI · 콘텐츠 · 디지털 역량을 결합한 통합 교육서비스 솔루션을 제공합니다.</p></div>
+<div class="grid g3"><article class="card pillar c-blue"><figure class="pillar-photo"><img src="/images/edu-operation.jpg" alt="강의실에서 화면 속 강연을 들으며 수업에 참여하는 성인 학습자들" width="900" height="600" loading="lazy" decoding="async"></figure><span class="ico " aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/><path d="M22 9v6"/></svg></span><div><span class="en">EDUCATION OPERATION</span><h3>교육운영</h3></div><ul><li><span class="ico " aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 19c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><circle cx="17" cy="9" r="2.4"/><path d="M16 13.6c2.8.2 5 2 5 4.9"/></svg></span><div><b>대학원 학사·학생지원</b><span>학사·수업·학생지원 등 교육운영</span></div></li><li><span class="ico " aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><path d="M7 8v4h2M11 12V8l1.5 2L14 8v4M17.5 8.5c-.4-.4-1.8-.6-1.8.4s1.9.8 1.9 1.8-1.5.9-2 .4"/></svg></span><div><b>LMS 운영·지원</b><span>LMS 관리 및 온라인 학습지원</span></div></li><li><span class="ico " aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><path d="M10.5 7.5l4 2.5-4 2.5z"/></svg></span><div><b>온라인교육 운영</b><span>원격·블렌디드 수업 및 학습관리</span></div></li><li><span class="ico " aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5A7 7 0 005 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span><div><b>지역거점센터 운영</b><span>7개 지역거점센터 지원 및 운영</span></div></li></ul></article><article class="card pillar c-violet"><figure class="pillar-photo"><img src="/images/content-studio.jpg" alt="조명과 카메라가 설치된 강의 영상 촬영 스튜디오" width="900" height="601" loading="lazy" decoding="async"></figure><span class="ico " aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 4v16M17 4v16M3 9h4M3 15h4M17 9h4M17 15h4"/><path d="M10.5 9.5l3.5 2.5-3.5 2.5z"/></svg></span><div><span class="en">AI · CONTENTS</span><h3>AI · 콘텐츠</h3></div><ul><li><span class="ico " aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/><path d="M9.5 14.5l1.2-5h.6l1.2 5M10 13h2M14.5 9.5v5"/></svg></span><div><b>AI 교육콘텐츠 제작</b><span>AI를 활용한 교육콘텐츠 기획·제작</span></div></li><li><span class="ico " aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 5.5C5.5 4.5 9 4.5 12 6c3-1.5 6.5-1.5 9-.5V19c-2.5-1-6-1-9 .5-3-1.5-6.5-1.5-9-.5z"/><path d="M12 6v13.5"/></svg></span><div><b>온라인 교육과정 개발</b><span>교수설계 기반 온라인 과정 개발</span></div></li><li><span class="ico " aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 4a3 3 0 00-3 3 3 3 0 00-2 5 3 3 0 002 5 3 3 0 003 3h1V4z"/><path d="M15 4a3 3 0 013 3 3 3 0 012 5 3 3 0 01-2 5 3 3 0 01-3 3h-1V4z"/></svg></span><div><b>생성형 AI 활용 교육</b><span>생성형 AI 교육 및 활용 지원</span></div></li><li><span class="ico " aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 11l3 3 5-5"/><path d="M7 21h10"/></svg></span><div><b>콘텐츠 품질관리</b><span>강의노트·영상·미디어 품질관리</span></div></li></ul></article><article class="card pillar c-teal"><figure class="pillar-photo"><img src="/images/digital-sns.jpg" alt="스마트폰으로 SNS 게시물 성과 통계를 확인하는 모습" width="900" height="1350" loading="lazy" decoding="async"></figure><span class="ico " aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 11v2a1 1 0 001 1h3l6 4V6L7 10H4a1 1 0 00-1 1z"/><path d="M17 9a4 4 0 010 6M19.5 6.5a8 8 0 010 11"/></svg></span><div><span class="en">DIGITAL</span><h3>디지털</h3></div><ul><li><span class="ico " aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><div><b>디지털 홍보</b><span>Newsletter · Shorts · SNS · 홈페이지</span></div></li><li><span class="ico " aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><path d="M7 8v4h2M11 12V8l1.5 2L14 8v4M17.5 8.5c-.4-.4-1.8-.6-1.8.4s1.9.8 1.9 1.8-1.5.9-2 .4"/></svg></span><div><b>LMS 운영·지원</b><span>교육서비스의 디지털 운영 지원</span></div></li><li><span class="ico " aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 00-14.3-4.9L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0014.3 4.9L20 16"/><path d="M20 20v-4h-4"/></svg></span><div><b>교육서비스 디지털 전환</b><span>업무 프로세스 효율화·고도화</span></div></li><li><span class="ico " aria-hidden="true"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5.5" rx="7" ry="2.5"/><path d="M5 5.5v13c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5v-13"/><path d="M5 12c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5"/></svg></span><div><b>데이터 기반 개선</b><span>운영·홍보 데이터 분석 및 개선</span></div></li></ul></article></div>
+</div></section>
+
+<section class="section alt"><div class="wrap">
+<div class="quote-band"><span class="eyebrow">AI 교육혁신 비전</span>
+<blockquote style="margin-top:16px">AI는 사람을 대체하는 기술이 아니라, 사람의 전문성과 창의성·생산성을 확장하는 교육 파트너입니다.</blockquote>
+<p>교육 전문성과 AI 기술을 연결하여 교수자·학습자·교육기관 모두가 체감하는 지속가능한 교육혁신을 지향합니다.</p>
+<div class="eq">Human Expertise <i>×</i> AI Technology <i>→</i> Smarter Education</div>
+<div style="margin-top:28px"><a class="btn btn-brass" href="/about/vision/">비전 자세히 보기 <span class="arrow">→</span></a></div>
+</div></div></section>
+
+<section class="section"><div class="wrap">
+<div class="sec-head"><span class="eyebrow">Why The LeadOn</span><h2>현장 경험을 사업 수행역량으로 연결합니다</h2></div>
+<div class="grid g3">
+<article class="card feature"><span class="ico " aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/><path d="M22 9v6"/></svg></span><h3>대학원 운영 전 과정을 아는 팀</h3><p>학사·수업·학생지원부터 지역센터, 원우회·동문회 행사까지 정보통신대학원 운영 실무를 직접 수행해 왔습니다.</p></article>
+<article class="card feature"><span class="ico " aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 4v16M17 4v16M3 9h4M3 15h4M17 9h4M17 15h4"/><path d="M10.5 9.5l3.5 2.5-3.5 2.5z"/></svg></span><h3>콘텐츠를 직접 만드는 제작 역량</h3><p>온라인 강의 기획과 스토리보드, 스튜디오·현장 촬영, 편집과 품질관리까지 사내 미디어팀이 맡습니다.</p></article>
+<article class="card feature"><span class="ico " aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 00-14.3-4.9L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0014.3 4.9L20 16"/><path d="M20 20v-4h-4"/></svg></span><h3>끊김 없는 운영 전환</h3><p>사전 인수부터 안정화까지 5단계 전환체계로 사업자 변경이 교육서비스의 단절로 이어지지 않게 합니다.</p></article>
+</div></div></section>
+{recent.length > 0 && (
+<section class="section"><div class="wrap">
+<div class="sec-head-row"><div class="sec-head"><span class="eyebrow">News</span><h2>최근 소식</h2></div><a class="more-link" href="/news/">전체 보기 →</a></div>
+<div class="news-grid">{recent.map((p) => <NewsCard post={p} />)}</div>
+</div></section>
+)}
+<section class="section tight"><div class="wrap"><div class="cta"><div><h2>교육 운영과 콘텐츠, 함께 설계해 보시겠어요?</h2><p>대학원 교육운영·AI 콘텐츠·디지털 홍보까지 한 팀이 맡습니다.</p></div>
+<a class="btn btn-brass" href="/contact/">문의하기 <span class="arrow">→</span></a></div></div></section>
+
+</Base>

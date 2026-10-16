@@ -1,0 +1,17 @@
+---
+interface Props { eyebrow: string; title: string; lead?: string; crumbs: { href?: string; label: string }[] }
+const { eyebrow, title, lead, crumbs } = Astro.props;
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [{ href: '/', label: '홈' }, ...crumbs].map((c, i) => ({
+    '@type': 'ListItem', position: i + 1, name: c.label,
+    ...(c.href ? { item: new URL(c.href, Astro.site).href } : {}),
+  })),
+};
+---
+<section class="page-head"><div class="wrap">
+<span class="eyebrow">{eyebrow}</span><h1>{title}</h1>{lead && <p>{lead}</p>}
+<div class="crumbs"><a href="/">홈</a>{crumbs.map((c) => <Fragment> / {c.href ? <a href={c.href}>{c.label}</a> : c.label}</Fragment>)}</div>
+</div></section>
+<script type="application/ld+json" set:html={JSON.stringify(ld)} />

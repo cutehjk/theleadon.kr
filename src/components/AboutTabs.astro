@@ -1,0 +1,12 @@
+---
+interface Props { current: 'about' | 'vision' | 'organization' }
+const { current } = Astro.props;
+const tabs = [
+  { key: 'about', href: '/about/', label: '회사 개요' },
+  { key: 'vision', href: '/about/vision/', label: 'AI 교육혁신 비전' },
+  { key: 'organization', href: '/about/organization/', label: '조직·인력' },
+];
+---
+<nav class="subtabs" aria-label="회사소개 하위 메뉴"><div class="wrap">
+  {tabs.map((t) => <a href={t.href} aria-current={t.key === current ? 'page' : undefined}>{t.label}</a>)}
+</div></nav>

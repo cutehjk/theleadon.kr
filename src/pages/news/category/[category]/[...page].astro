@@ -1,0 +1,26 @@
+---
+import type { GetStaticPaths } from 'astro';
+import Base from '../../../../layouts/Base.astro';
+import PageHead from '../../../../components/PageHead.astro';
+import NewsList from '../../../../components/NewsList.astro';
+import { CATEGORIES, getPosts, splitPinned, PER_PAGE, type CategoryKey } from '../../../../lib/news';
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = await getPosts();
+  if (posts.length === 0) return [];
+  return (Object.keys(CATEGORIES) as CategoryKey[]).flatMap((category) => {
+    const { pinned, rest } = splitPinned(posts.filter((p) => p.data.category === category));
+    return paginate(rest, { pageSize: PER_PAGE, params: { category }, props: { pinned, category } });
+  });
+}) satisfies GetStaticPaths;
+
+const { page, pinned, category } = Astro.props;
+const label = CATEGORIES[category].label;
+const suffix = page.currentPage > 1 ? ` (${page.currentPage}페이지)` : '';
+---
+<Base title={`${label} - 소식${suffix}`} description={`더리드온 소식 중 ${label} 목록입니다.`} section="news">
+<PageHead eyebrow="News" title="소식" lead="더리드온의 공지와 사업 소식을 전합니다." crumbs={[{ href: '/news/', label: '소식' }, { label }]} />
+<section class="section"><div class="wrap">
+  <NewsList page={page} pinned={pinned} category={category} />
+</div></section>
+</Base>

@@ -1,37 +1,11 @@
-<!doctype html>
-<html lang="ko">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>회사소개 · 더리드온</title>
-<meta name="description" content="더리드온 회사소개 - 교육의 본질과 기술의 가능성을 연결하는 AI·에듀테크 전문기업의 미션, 슬로건, 핵심가치와 회사 현황.">
-<link rel="canonical" href="https://theleadon.kr/about.html">
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="icon" href="mark.png" type="image/png">
-<link rel="apple-touch-icon" href="mark.png">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="더리드온 The LeadOn">
-<meta property="og:locale" content="ko_KR">
-<meta property="og:title" content="회사소개 · 더리드온">
-<meta property="og:description" content="더리드온 회사소개 - 교육의 본질과 기술의 가능성을 연결하는 AI·에듀테크 전문기업의 미션, 슬로건, 핵심가치와 회사 현황.">
-<meta property="og:url" content="https://theleadon.kr/about.html">
-<meta property="og:image" content="https://theleadon.kr/hero.jpg">
-<meta property="og:image:width" content="654">
-<meta property="og:image:height" content="706">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Montserrat:wght@500;600;700;800&display=swap">
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-<header class="site-header"><div class="wrap">
-<a class="brand" href="index.html" aria-label="더리드온 홈"><span class="mark"><img src="mark.png" alt="" width="30" height="23"></span><span><span class="word">THELEAD<b>ON</b></span><small>LEAD TODAY, GROW TOMORROW</small></span></a>
-<nav class="nav" aria-label="주요 메뉴"><a href="about.html" aria-current="page">회사소개</a><a href="business.html">사업영역</a><a href="vision.html">AI 교육혁신</a><a href="organization.html">조직·인력</a><a href="contact.html">문의</a></nav></div></header>
-<main>
+---
+import Base from '../../layouts/Base.astro';
+import AboutTabs from '../../components/AboutTabs.astro';
+---
+<Base title="회사소개" description="더리드온 회사소개 - 교육의 본질과 기술의 가능성을 연결하는 AI·에듀테크 전문기업의 미션, 슬로건, 핵심가치와 회사 현황." section="about">
 <section class="page-head"><div class="wrap"><span class="eyebrow">About Us</span><h1>회사 소개</h1><p>교육과 기술을 연결하여 사람과 조직의 성장을 지원하는 AI·에듀테크 전문기업</p>
-<div class="crumbs"><a href="index.html">홈</a> / 회사소개</div></div></section>
+<div class="crumbs"><a href="/">홈</a> / 회사소개</div></div></section>
+<AboutTabs current="about" />
 <section class="section"><div class="wrap split">
 <div class="sec-head" style="margin:0"><span class="eyebrow">The LeadOn</span><h2>교육의 본질과 기술의 가능성을 연결합니다</h2>
 <p class="lead">더리드온(The LeadOn)은 대학원 현장 운영 경험을 기반으로 교육 운영 · AI · 콘텐츠 · 디지털 기술을 결합하여 교육 서비스의 새로운 가치를 만들어갑니다.</p>
@@ -62,15 +36,6 @@
 <div class="term result"><b>대학원 가치·성과 향상</b><span>지속가능한 성장 실현</span></div></div>
 </div></section>
 <section class="section tight"><div class="wrap"><div class="cta"><div><h2>교육 운영과 콘텐츠, 함께 설계해 보시겠어요?</h2><p>대학원 교육운영·AI 콘텐츠·디지털 홍보까지 한 팀이 맡습니다.</p></div>
-<a class="btn btn-brass" href="contact.html">문의하기 <span class="arrow">→</span></a></div></div></section>
+<a class="btn btn-brass" href="/contact/">문의하기 <span class="arrow">→</span></a></div></div></section>
 
-</main>
-<footer class="site-footer"><div class="wrap">
-<div><a class="brand" href="index.html"><span class="mark"><img src="mark.png" alt="" width="30" height="23"></span><span><span class="word">THELEAD<b>ON</b></span><small>LEAD TODAY, GROW TOMORROW</small></span></a>
-<p style="margin-top:18px;max-width:36ch">교육과 기술을 연결하여 사람과 조직의 성장을 지원하는 AI·에듀테크 전문기업</p></div>
-<div><h5>회사</h5><ul><li><a href="about.html">회사소개</a></li><li><a href="business.html">사업영역</a></li><li><a href="vision.html">AI 교육혁신 비전</a></li><li><a href="organization.html">조직·인력</a></li></ul></div>
-<div><h5>문의</h5><ul><li><a href="contact.html">문의 안내</a></li></ul></div>
-<div class="legal"><span>주식회사 더리드온 (The LeadOn)</span><span>© 2026 The LeadOn. All rights reserved.</span></div>
-</div></footer>
-</body>
-</html>
+</Base>
